@@ -15,9 +15,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      - run: mvn package
+      - run: mvn --batch-mode package
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: simba-athena-driver-sso-support-1.0-jar-with-dependencies.jar
+          files: target/simba-athena-driver-sso-support-1.0-jar-with-dependencies.jar
