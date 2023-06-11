@@ -8,6 +8,10 @@
 mvn package
 ```
 
+### Use pre-built jar package
+You can download the pre-built jar file from the latest release [here](https://github.com/neitomic/simba-athena-driver-sso-support/releases)
+
+
 ### Supporting profile credentials types
 
 Basically all types of credentials supported in `software.amazon.awssdk.auth.credentials.internal.ProfileCredentialsUtils`:
