@@ -4,34 +4,32 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.simba.athena.amazonaws.auth.BasicAWSCredentials;
 import com.simba.athena.amazonaws.auth.BasicSessionCredentials;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.*;
 import software.amazon.awssdk.profiles.Profile;
 import software.amazon.awssdk.profiles.ProfileFile;
-import software.amazon.awssdk.services.sso.auth.SsoProfileCredentialsProviderFactory;
 
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class SsoCredentialsProvider implements AWSCredentialsProvider {
+public class AwsProfileCredentialsProvider implements AWSCredentialsProvider {
+
     private final AwsCredentialsProvider credentialsProviderV2;
 
-    public SsoCredentialsProvider(String profilesConfigFilePath, String profileName) {
+    public AwsProfileCredentialsProvider(String profilesConfigFilePath, String profileName) {
         this(ProfileFile.builder().content(Paths.get(profilesConfigFilePath)).type(ProfileFile.Type.CONFIGURATION).build(), profileName);
     }
 
-    public SsoCredentialsProvider(String profileName) {
+    public AwsProfileCredentialsProvider(String profileName) {
         this(ProfileFile.defaultProfileFile(), profileName);
     }
 
-    public SsoCredentialsProvider(ProfileFile profileFile, String profileName) {
+    public AwsProfileCredentialsProvider(ProfileFile profileFile, String profileName) {
         Optional<Profile> profile = profileFile.profile(profileName);
         if (!profile.isPresent()) {
             throw new IllegalArgumentException(String.format("Profile %s not found", profileName));
         }
-        credentialsProviderV2 = new SsoProfileCredentialsProviderFactory().create(profile.get());
+
+        credentialsProviderV2 = ProfileCredentialsProvider.builder().profileFile(profileFile).profileName(profileName).build();
     }
 
     @Override
